@@ -11,14 +11,14 @@ module.exports = {
      * infrastrukturaController.list()
      */
     list: function (req, res) {
-        infrastrukturaModel.find(function (err, infrastrukturas) {
+        infrastrukturaModel.find(function (err, infrastruktura) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting infrastruktura.',
                     error: err
                 });
             }
-            return res.json(infrastrukturas);
+            return res.json(infrastruktura);
         });
     },
 
@@ -49,7 +49,7 @@ module.exports = {
     create: function (req, res) {
         var infrastruktura = new infrastrukturaModel({
 			lokacija : req.body.lokacija,
-			stanje_vozisca : req.body.stanje_vozisca,
+			stanje_vozisca : req.body.stanje,
 			hitrost : req.body.hitrost,
 			razmik : req.body.razmik
 
