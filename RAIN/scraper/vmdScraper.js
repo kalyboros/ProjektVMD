@@ -16,7 +16,7 @@ puppeteer
   .then(function(html) {
     $('td', html).each(function() {
       array.push($(this).text());
-      //console.log($(this).text());
+      console.log($(this).text());
     });
   })
   .catch(function(err) {
