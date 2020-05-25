@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const url = 'https://www.promet.si/portal/sl/stevci-prometa.aspx';
 const $ = require('cheerio');
+var array = [];
 
 puppeteer
   .launch()
@@ -14,7 +15,8 @@ puppeteer
   })
   .then(function(html) {
     $('td', html).each(function() {
-      console.log($(this).text());
+      array.push($(this).text());
+      //console.log($(this).text());
     });
   })
   .catch(function(err) {
