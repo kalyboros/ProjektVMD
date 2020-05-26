@@ -6,6 +6,8 @@ var infrastrukturaController = require('../controllers/infrastrukturaController.
  * GET
  */
 router.get('/', infrastrukturaController.list);
+//router.get('/infra', infrastrukturaController.showInfra);
+router.get('/posodobi', infrastrukturaController.dodajPodatke);
 
 /*
  * GET

@@ -1,4 +1,10 @@
 var infrastrukturaModel = require('../models/infrastrukturaModel.js');
+const puppeteer = require('puppeteer');
+const url = 'https://www.promet.si/portal/sl/stevci-prometa.aspx';
+const $ = require('cheerio');
+var array = [];
+var MongoClient = require('mongodb').MongoClient;
+var url2 = "mongodb://localhost:27017/";
 
 /**
  * infrastrukturaController.js
@@ -18,7 +24,8 @@ module.exports = {
                     error: err
                 });
             }
-            return res.json(infrastruktura);
+            //return res.redirect("infrastruktura");
+            return res.render("izpis", {infrastruktura: infrastruktura});
         });
     },
 
@@ -42,6 +49,56 @@ module.exports = {
             return res.json(infrastruktura);
         });
     },
+    dodajPodatke: function (req, res) {
+        puppeteer
+            .launch()
+            .then(function(browser) {
+                return browser.newPage();
+            })
+            .then(function(page) {
+                return page.goto(url).then(function() {
+                    return page.content();
+                });
+            })
+            .then(function(html) {
+                $('td', html).each(function() {
+                    array.push($(this).text());
+                    console.log($(this).text());
+                });
+                console.log("_________________________________________________________________");
+                MongoClient.connect(url2, function(err, db) {
+                    if (err) throw err;
+                    var dbo = db.db("projekt_database");
+                    dbo.collection('infrastrukturas',function(err, collection){
+                        collection.deleteMany({},function(err, removed){
+                        });
+                    });
+                });
+                MongoClient.connect(url2, function(err, db) {
+                    if (err) throw err;
+                    var dbo = db.db("projekt_database");
+                    var myobj = [];
+                    for(var i=0; i<300; i++)
+                    {
+                        myobj.push({ lokacija: array[i*10+65], stanje_vozisca: array[i*10+72], hitrost: array[i*10+70], razmik: array[i*10+71]});
+                    }
+                    dbo.collection("infrastrukturas").insertMany(myobj, function(err, res) {
+                        if (err) throw err;
+                        console.log("Number of documents inserted: " + res.insertedCount);
+                        db.close();
+                    });
+                });
+                return res.redirect('/');
+            })
+            .catch(function(err) {
+                //handle error
+            });
+    }
+    ,
+    /*showInfra: function (req, res) {
+        res.render('izpis');
+    }
+    ,*/
 
     /**
      * infrastrukturaController.create()
