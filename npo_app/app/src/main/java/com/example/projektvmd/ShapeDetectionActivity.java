@@ -184,6 +184,15 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
                 }
             }
         }
+
+        contours = new ArrayList<MatOfPoint>();
+        hierarchy = new Mat();
+
+        Mat white_hue_range = new Mat();
+        Core.inRange(HSV, new Scalar(0,0,255), new Scalar(255,0,255), white_hue_range);  // poišče belo barvo
+
+        Imgproc.findContours(white_hue_range, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0, 0));  // poišče vse contourse
+        hierarchy.release();
         /*Mat circles = new Mat();
         Imgproc.HoughCircles(threshold, circles, Imgproc.CV_HOUGH_GRADIENT,
                 2.0, 100, 100, 300,
@@ -206,7 +215,7 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
                 Imgproc.circle(mRgbaT, pt, 3, new Scalar(0,0,255), 5);
             }
         }*/
-        return red_hue_range;  //vrne barvno sliko s vsemi najdenimi objekti
+        return white_hue_range;  //vrne barvno sliko s vsemi najdenimi objekti
     }
 
     public void Photo(View view) {

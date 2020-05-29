@@ -86,10 +86,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void OpenCVTest(View view) {
-        Intent intent = new Intent(MainActivity.this, OpenCVActivity.class);
-        startActivity(intent);
-    }
     public void OpenCV(View view) {
         Intent intent = new Intent(MainActivity.this, ShapeDetectionActivity.class);
         startActivity(intent);
