@@ -3,6 +3,7 @@ package com.example.projektvmd;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -84,5 +85,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("on response", mMessage);
             }
         });
+    }
+    public void OpenCVTest(View view) {
+        Intent intent = new Intent(MainActivity.this, OpenCVActivity.class);
+        startActivity(intent);
+    }
+    public void OpenCV(View view) {
+        Intent intent = new Intent(MainActivity.this, ShapeDetectionActivity.class);
+        startActivity(intent);
     }
 }
