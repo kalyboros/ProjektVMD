@@ -132,8 +132,8 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
                     Imgproc.rectangle(mRgbaT, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
                     Imgproc.putText(mRgbaT, "Trikotnik", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
                 }
-            }*/
-            /*else if(approxCurve.size().height == 4){ // če je število črt enako 4 bo to zaznal kot kvadrat
+            }
+            else if(approxCurve.size().height == 4){ // če je število črt enako 4 bo to zaznal kot kvadrat
                 float w = rect.width;
                 float aspectRatio = w/rect.height;  // izračun aspectRation pogleda če je objekt kvadrat
                 //if(aspectRatio >= 0.05 && aspectRatio <= 1.95){
@@ -193,6 +193,30 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
 
         Imgproc.findContours(white_hue_range, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0, 0));  // poišče vse contourse
         hierarchy.release();
+        for ( int contourIdx=0; contourIdx < contours.size(); contourIdx++ ) // for stavek ki gre skozi vse contourse
+        {
+            // Minimum size allowed for consideration
+            MatOfPoint2f approxCurve = new MatOfPoint2f();
+            MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(contourIdx).toArray());
+            //Processing on mMOP2f1 which is in type MatOfPoint2f
+            double approxDistance = Imgproc.arcLength(contour2f, true) * 0.01;
+            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);  // izračuna približno število črt
+
+            //Convert back to MatOfPoint
+            MatOfPoint points = new MatOfPoint(approxCurve.toArray());
+
+            // Get bounding rect of contour
+            Rect rect = Imgproc.boundingRect(points);
+            if(approxCurve.size().height == 3){ // če je število črt enako 4 bo to zaznal kot kvadrat
+                float w = rect.width;
+                float aspectRatio = w/rect.height;  // izračun aspectRation pogleda če je objekt kvadrat
+                double contourArea = Imgproc.contourArea(contours.get(contourIdx));
+                if(contourArea > 1500){
+                    Imgproc.rectangle(mRgbaT, new Point(rect.x-10, rect.y-10), new Point(rect.x + rect.width + 10, rect.y + rect.height + 10), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
+                    Imgproc.putText(mRgbaT, "Trikotnik", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
+                }
+            }
+        }
         /*Mat circles = new Mat();
         Imgproc.HoughCircles(threshold, circles, Imgproc.CV_HOUGH_GRADIENT,
                 2.0, 100, 100, 300,
@@ -215,7 +239,7 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
                 Imgproc.circle(mRgbaT, pt, 3, new Scalar(0,0,255), 5);
             }
         }*/
-        return white_hue_range;  //vrne barvno sliko s vsemi najdenimi objekti
+        return mRgbaT;  //vrne barvno sliko s vsemi najdenimi objekti
     }
 
     public void Photo(View view) {
