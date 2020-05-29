@@ -90,4 +90,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ShapeDetectionActivity.class);
         startActivity(intent);
     }
+
+    public void gps(View view) {
+        Intent intent = new Intent(MainActivity.this, GPSActivity.class);
+        startActivity(intent);
+    }
 }
