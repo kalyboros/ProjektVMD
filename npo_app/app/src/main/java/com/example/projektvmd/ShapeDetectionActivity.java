@@ -177,13 +177,11 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
             if(approxCurve.size().height == 4){ // če je število črt enako 4 bo to zaznal kot kvadrat
                 float w = rect.width;
                 float aspectRatio = w/rect.height;  // izračun aspectRation pogleda če je objekt kvadrat
-                //if(aspectRatio >= 0.05 && aspectRatio <= 1.95){
                 double contourArea = Imgproc.contourArea(contours.get(contourIdx));
                 if(contourArea > 1500){
                     Imgproc.rectangle(mRgbaT, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
                     Imgproc.putText(mRgbaT, "Moder znak", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
                 }
-            //}
             }
         }
         /*Mat circles = new Mat();
