@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="no-js" lang="">
+  <head>
+  	<meta charset="utf-8">
+  	<meta http-equiv="x-ua-compatible" content="ie=edge">
+  	<title>Grafikoni</title>
+
+  	<script type="text/javascript"></script>
+
+  	<style type="text/css">
+  		.div1 {
+  			float: left;
+  			border: 2px outset red;
+  			 margin: 25px;
+  		}
+
+  		.div2 {
+  			float: left;
+  			border: 2px outset red;
+  			margin: 25px;
+  		}
+
+  		.div3 {
+  			float: left;
+  			border: 2px outset red;
+  			margin: 25px;
+  		}
+
+  		.div4 {
+  			float: left;
+  			border: 2px outset red;
+  			margin: 25px;
+  		}
+
+  		.div5 {
+  			float: left;
+  			border: 2px outset red;
+  			margin: 25px;
+  		}
+
+  		.div6 {
+  			float: left;
+  			border: 2px outset red;
+  			margin: 25px;
+  		}
+
+  		.div7 {
+  			float: left;
+  			border: 2px outset red;
+  			margin: 25px;
+  		}
+
+  		.div8 {
+  			float: left;
+  			border: 2px outset red;
+  			margin: 25px;
+  		}
+
+  		.button {
+			background-color: #f4511e;
+			border: none;
+			color: white;
+			float: left;
+			padding: 12px 22px;
+			text-align: center;
+			font-size: 12px;
+			margin: 10px;
+			opacity: 0.6;
+			transition: 0.3s;
+			text-decoration: none;
+			cursor: pointer;
+			}
+
+		.divContainer {
+			border: 2px outset green;
+  			margin: 15px;
+  			display: flex;
+  			flex-wrap: wrap;
+		}
+
+		.divButtonContainer {
+			margin: 10px;
+			display: flex !important;
+			flex-wrap: wrap;		
+		}
+
+  	</style>
+
+  </head>
+  <body>
+  	<div class="divButtonContainer">
+   		<button class="button"  onclick="myFunction()">Update</button>	
+  	</div>
+
+
+
+  	<div class="divContainer">
+	   	<div class="div1" style="width: 800px">
+	  		<canvas id="lineChart" height="200" width="600"></canvas>
+	  	</div>
+
+	  	<div class="div2" style="width: 800px">
+	  		<canvas id="averageChart" height="200" width="600"></canvas>
+	  	</div>
+
+	  	<div class="div3" style="width: 400px">
+	  		<canvas id="areaChart" height="200" width="300"></canvas>
+	  	</div>
+
+	  	<div class="div4" style="width: 400px">
+	  		<canvas id="barDataChart" height="200" width="300"></canvas>
+	  	</div>
+
+	  	<div class="div5" style="width: 400px">
+	  		<canvas id="statusChart" height="200" width="300"></canvas>
+	  	</div>
+
+	  	<div class="div6" style="width: 400px">
+	  		<canvas id="aChart" height="200" width="300"></canvas>
+	  	</div> 
+
+	  	<div class="div7" style="width: 400px">
+	  		<canvas id="bChart" height="200" width="300"></canvas>
+	  	</div>
+
+	  	<div class="div8" style="width: 400px">
+	  		<canvas id="cChart" height="200" width="300"></canvas>
+	  	</div>
+
+  	</div>
+
+  	
+
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+  	<script src="js/myscript.js"></script>
+  	<script src=”http://code.jquery.com/jquery-latest.min.js"></script>
+  	<script src="/socket.io/socket.io.js"></script>
+  	<script>
+  	var socket = io();
+
+  	function myFunction(){
+  		socket.emit('RequestUpdate', "0");
+  		
+  	}
+
+
+  	//posiljanje zahtevkov na server preko gumba
+  	function LoadLineChart(){
+  		socket.emit('LoadLineChart', "0");
+  	};
+
+
+
+  	//sprejemanje zahtevkov in displayanje
+  	socket.on('FinalizeLineChart', function(hitrost, lokacija){
+  	//alert("nekaj" + msg[1]);
+ 	var ctx = document.getElementById("lineChart").getContext('2d');
+		var myChart = new Chart(ctx, {
+		    type: 'line',
+		    data: {
+		        labels: lokacija,
+		        datasets: [{
+		            label: 'Verižna kumulativna frekvenca vseh vozisc',
+		            data: hitrost,
+		            backgroundColor: [
+		                'rgba(255, 206, 86, 0.2)',
+		            ],
+		            borderColor: [
+		                'rgba(54, 162, 235, 1)',
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});		  		
+  	});
+
+  	//povprecne hitrosti
+  	socket.on('AverageSpeedsChart', function(lokacija, hitrost){
+ 	var ctx = document.getElementById("averageChart").getContext('2d');
+		var myChart = new Chart(ctx, {
+		    type: 'line',
+		    data: {
+		        labels: lokacija,
+		        datasets: [{
+		            label: 'Povprečna hitrost na vozišču',
+		            data: hitrost,
+		            backgroundColor: [
+		                'rgba(255, 99, 132, 0.2)',
+		            ],
+		            borderColor: [
+		                'rgba(255, 99, 132, 1)',
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});		  		
+  	});
+
+  	socket.on('FinalizeDistanceChart', function( najmanjsiRazmik, najvecjiRazmik, varianca){
+  	//alert("nekaj" + msg[1]);
+ 	var ctx = document.getElementById("areaChart").getContext('2d');
+		var myChart = new Chart(ctx, {
+		    type: 'doughnut',
+		    data: {
+		        labels: ['min', 'max', 'varianca'],
+		        datasets: [{
+		            label: 'Statistika variance',
+		            data: [najmanjsiRazmik,najvecjiRazmik,varianca],
+		            backgroundColor: [
+		                'rgba(255, 99, 132, 0.2)',
+		                'rgba(54, 162, 235, 0.2)',
+		                'rgba(255, 206, 86, 0.2)'
+
+		            ],
+		            borderColor: [
+		                'rgba(255, 99, 132, 1)',
+		                'rgba(54, 162, 235, 1)',
+		                'rgba(255, 206, 86, 1)'
+
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});	
+  	});
+
+  	socket.on('FinalizeBarDataChart', function(averageSpeed, povprRazmik, odklon){
+  	//alert("nekaj" + msg[1]);
+ 	var ctx = document.getElementById("barDataChart").getContext('2d');
+		var myChart = new Chart(ctx, {
+		    type: 'bar',
+		    data: {
+		        labels: ['povprecna hitrost', 'povprecen razmik', 'odklon'],
+		        datasets: [{
+		            label: 'Osnovni Satisticni podatki',
+		            data: [averageSpeed, povprRazmik, odklon],
+		            backgroundColor: [
+		                'rgba(255, 99, 132, 0.2)',
+		                'rgba(54, 162, 235, 0.2)',
+		                'rgba(255, 206, 86, 0.2)'
+
+		            ],
+		            borderColor: [
+		                'rgba(255, 99, 132, 1)',
+		                'rgba(54, 162, 235, 1)',
+		                'rgba(255, 206, 86, 1)'
+
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});	
+  	});
+
+  	socket.on('RoadStatusChart', function(uniqueStatus,counts){
+  	//alert("nekaj" + msg[1]);
+ 	var ctx = document.getElementById("statusChart").getContext('2d');
+		var myChart = new Chart(ctx, {
+		    type: 'bar',
+		    data: {
+		        labels: uniqueStatus,
+		        datasets: [{
+		            label: 'Status vozisc',
+		            data: counts,
+		            backgroundColor: [
+		                'rgba(54, 162, 235, 0.2)',
+		                'rgba(255, 206, 86, 0.2)',
+		                'rgba(5, 206, 86, 0.2)'
+
+		            ],
+		            borderColor: [
+		                'rgba(54, 162, 235, 1)',
+		                'rgba(255, 206, 86, 1)',
+		                'rgba(5, 206, 86, 1)'
+
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});	
+  	});
+
+  	</script>
+
+  </body>
+</html>
