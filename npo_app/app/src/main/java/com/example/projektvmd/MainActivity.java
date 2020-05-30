@@ -95,4 +95,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, GPSActivity.class);
         startActivity(intent);
     }
+
+    public void verzija1(View view) {
+        Intent intent = new Intent(MainActivity.this, Verzija1.class);
+        startActivity(intent);
+    }
 }
