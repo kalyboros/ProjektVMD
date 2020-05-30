@@ -126,24 +126,6 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
 
             // Get bounding rect of contour
             Rect rect = Imgproc.boundingRect(points);
-            /*if(approxCurve.size().height == 3){  // če je število črt enako 3 bo to zaznal kot trikotnik
-                double contourArea = Imgproc.contourArea(contours.get(contourIdx));
-                if(contourArea > 1500){
-                    Imgproc.rectangle(mRgbaT, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
-                    Imgproc.putText(mRgbaT, "Trikotnik", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
-                }
-            }
-            else if(approxCurve.size().height == 4){ // če je število črt enako 4 bo to zaznal kot kvadrat
-                float w = rect.width;
-                float aspectRatio = w/rect.height;  // izračun aspectRation pogleda če je objekt kvadrat
-                //if(aspectRatio >= 0.05 && aspectRatio <= 1.95){
-                    double contourArea = Imgproc.contourArea(contours.get(contourIdx));
-                    if(contourArea > 500){
-                        Imgproc.rectangle(mRgbaT, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
-                        Imgproc.putText(mRgbaT, "Kvadrat", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
-                    }
-                //}
-            }*/
             if(approxCurve.size().height == 8){ // če je število črt enako 4 bo to zaznal kot kvadrat
                 double contourArea = Imgproc.contourArea(contours.get(contourIdx));
                 if(contourArea > 1500){
@@ -175,8 +157,8 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
             // Get bounding rect of contour
             Rect rect = Imgproc.boundingRect(points);
             if(approxCurve.size().height == 4){ // če je število črt enako 4 bo to zaznal kot kvadrat
-                float w = rect.width;
-                float aspectRatio = w/rect.height;  // izračun aspectRation pogleda če je objekt kvadrat
+                //float w = rect.width;
+                //float aspectRatio = w/rect.height;  // izračun aspectRation pogleda če je objekt kvadrat
                 double contourArea = Imgproc.contourArea(contours.get(contourIdx));
                 if(contourArea > 1500){
                     Imgproc.rectangle(mRgbaT, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
@@ -207,13 +189,44 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
 
             // Get bounding rect of contour
             Rect rect = Imgproc.boundingRect(points);
-            if(approxCurve.size().height == 3){ // če je število črt enako 4 bo to zaznal kot kvadrat
+            if(approxCurve.size().height == 3){ // če je število črt enako 3 bo to zaznal kot trikotnik
+                double contourArea = Imgproc.contourArea(contours.get(contourIdx));
+                if(contourArea > 1500){
+                    Imgproc.rectangle(mRgbaT, new Point(rect.x-10, rect.y-10), new Point(rect.x + rect.width + 10, rect.y + rect.height + 10), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
+                    Imgproc.putText(mRgbaT, "Trikotni znak", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
+                }
+            }
+        }
+
+        contours = new ArrayList<MatOfPoint>();
+        hierarchy = new Mat();
+
+        Mat yellow_hue_range = new Mat();
+        Core.inRange(HSV, new Scalar(20, 100, 100), new Scalar(30, 255, 255), yellow_hue_range);  // poišče rumeno barvo
+
+        Imgproc.findContours(yellow_hue_range, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0, 0));  // poišče vse contourse
+        hierarchy.release();
+        for ( int contourIdx=0; contourIdx < contours.size(); contourIdx++ ) // for stavek ki gre skozi vse contourse
+        {
+            // Minimum size allowed for consideration
+            MatOfPoint2f approxCurve = new MatOfPoint2f();
+            MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(contourIdx).toArray());
+            //Processing on mMOP2f1 which is in type MatOfPoint2f
+            double approxDistance = Imgproc.arcLength(contour2f, true) * 0.01;
+            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);  // izračuna približno število črt
+
+            //Convert back to MatOfPoint
+            MatOfPoint points = new MatOfPoint(approxCurve.toArray());
+
+            // Get bounding rect of contour
+            Rect rect = Imgproc.boundingRect(points);
+            if(approxCurve.size().height == 4){ // če je število črt enako 4 bo to zaznal kot kvadrat
                 float w = rect.width;
                 float aspectRatio = w/rect.height;  // izračun aspectRation pogleda če je objekt kvadrat
                 double contourArea = Imgproc.contourArea(contours.get(contourIdx));
                 if(contourArea > 1500){
-                    Imgproc.rectangle(mRgbaT, new Point(rect.x-10, rect.y-10), new Point(rect.x + rect.width + 10, rect.y + rect.height + 10), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
-                    Imgproc.putText(mRgbaT, "Trikotnik", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
+                    Imgproc.rectangle(mRgbaT, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);  // nariše kvadrat okoli tega objekta
+                    Imgproc.putText(mRgbaT, "Prednostni znak", new Point(rect.x, rect.y),3 , 1, new Scalar(255, 0, 0, 255), 2);  // poda text najdenemu objektu
                 }
             }
         }
