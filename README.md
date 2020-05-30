@@ -10,8 +10,6 @@ Contact of developers
 
 |Name|Surname|Email|
 |----|-------|-----|
-|----|-------|-----|
-|----|-------|-----|
 |Dalibor|Veselinovic|dadosa123@gmail.com|
 |Mitja|Polner|polner.mitja@gmail.com|
 |Vito|Kurnik|vito.kurnik@gmail.com|
