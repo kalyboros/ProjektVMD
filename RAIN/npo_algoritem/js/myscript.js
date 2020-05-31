@@ -26,10 +26,9 @@ http.listen(7000, () => {
 //povezovanje z bazo
 var url = "mongodb://127.0.0.1:27017";
 const dbName = 'projekt_database';
-var locations = [];
-var status = [];
-var speeds = [];
-var razmik = [];
+var longitudes = [];
+var latitudes = [];
+var timestamps = [];
 
 
 
@@ -49,6 +48,14 @@ MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) {
     */
     var i;
     for(i = 0; i < dolzina; i++){
+      var longS = result[i];
+      longS = longS.longitude;
+      longitudes.push(longS);
+
+      var latS = result[i];
+      latS = latS.latitude;
+      latitudes.push(latS);     
+
       
       //shranim lokacije v polje
       var lokacijaS = result[i];
