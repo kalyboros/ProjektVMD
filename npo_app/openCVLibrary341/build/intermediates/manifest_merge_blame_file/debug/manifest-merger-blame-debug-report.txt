@@ -5,14 +5,8 @@
 5    android:versionName="3.4.1" > <!-- <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="21" /> -->
 6    <uses-sdk
 7        android:minSdkVersion="8"
-
-7-->C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
-8        android:targetSdkVersion="27" />
-8-->C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
-
 7-->C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
 8        android:targetSdkVersion="27" />
 8-->C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
-
 9
 10</manifest>

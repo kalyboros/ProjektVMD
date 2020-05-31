@@ -115,7 +115,7 @@ public class GPSActivity extends AppCompatActivity {
         }
 
         RequestBody body = RequestBody.create(MEDIA_TYPE, postdata.toString());
-        String url = "https://6a7a724111ba.ngrok.io/gps/" + postdata;
+        String url = "https://ca8fca68b7c4.ngrok.io/gps/" + postdata;
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
