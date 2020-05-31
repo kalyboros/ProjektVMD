@@ -26,11 +26,22 @@ http.listen(7000, () => {
 //povezovanje z bazo
 var url = "mongodb://127.0.0.1:27017";
 const dbName = 'projekt_database';
-var locations = [];
-var status = [];
-var speeds = [];
-var razmik = [];
+var longitudes = [];
+var latitudes = [];
+var timestamps = [];
 
+var longDiffs = [];
+var latDiffs = [];
+var vectorDiffsX = [];
+var vectorDiffsY = [];
+var timeDiff = [];
+var nC = [];
+
+var boolLong = [];
+var boolLat = [];
+
+var prevoznost = [];
+var status = [];
 
 
 MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) {   
@@ -42,164 +53,152 @@ MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) {
     if (err) throw err;
     var dolzina = result.length;
 
-    /*
-    var nekaj = result[1];
-    nekaj = nekaj._id.toString();
-    console.log(nekaj);
-    */
     var i;
     for(i = 0; i < dolzina; i++){
-      
-      //shranim lokacije v polje
-      var lokacijaS = result[i];
-      lokacijaS = lokacijaS.lokacija;
-      locations.push(lokacijaS);
-      //shranim stanja v polje
-      var stanjeS = result[i];
-      stanjeS = stanjeS.stanje_vozisca;
-      status.push(stanjeS);
-      //console.log(stanjeS);
-      //shranim hitrosti
-      var hitrostS = result[i];
-      hitrostS = hitrostS.hitrost;
-      speeds.push(parseFloat(hitrostS));
-      //shranim razmike
-      var razmikS = result[i];
-      razmikS = razmikS.razmik;
-      razmik.push(razmikS);      
+      var longS = result[i];
+      longS = longS.longitude;
+      longitudes.push(longS);
 
+      var latS = result[i];
+      latS = latS.latitude;
+      latitudes.push(latS);
 
+      var timeS = result[i];
+      timeS = timeS.time_stamp;
+      timestamps.push(timeS);
+      //console.log(timestamps[i]);
     }
 
     client.close();
     console.log("zapiram povezavo")
-    //pretvorim result v tako dato da jo lahko analiziram -> array
   });     
 });
 
-//po tem ko parsam podatke iz baze jih se moram spremeniti v obliko katero bo lahko client obdelal in displayal
-  
-function onlyUnique(value, index, self) { 
-    return self.indexOf(value) === index;
-}
+function algoritem(){
+  //racunal bom razlike na 3 in 4 mestu po long/lat
+  for(var i = 0; i < longitudes.length; i++){
+    var integerP = parseFloat(longitudes[i-1]) * 1000000;
+    var integerN = parseFloat(longitudes[i]) * 1000000;
+    var diff = Math.abs(integerN-integerP)
+    if(i == 0){
+      longDiffs.push(0);
+    }
+    if(i != 0){
+      longDiffs.push(diff);
+    }
+    
+    //console.log(longDiffs[i]);
+  }
 
-function average(list) {
-    let total = 0;
+  for(var i = 0; i < latitudes.length; i++){
+    var integerP = parseFloat(latitudes[i-1]) * 1000000;
+    var integerN = parseFloat(latitudes[i]) * 1000000;
+    var diff = Math.abs(integerN-integerP)
+    if(i == 0){
+      latDiffs.push(0);
+    }
+    if(i != 0){
+      latDiffs.push(diff);
+    }
+    
+    //console.log(latDiffs[i]);
+  }
 
-    for (num of list) {
-        total += num;
+  //racun vektorjev glede na prejsnje koordinate
+  for(var i = 0; i < latitudes.length; i++){
+    var Latp = parseFloat(latitudes[i-1]) * 1000000;
+    var Latn = parseFloat(latitudes[i]) * 1000000;
+
+    var Longp = parseFloat(longitudes[i-1]) * 1000000;
+    var Longn = parseFloat(longitudes[i]) * 1000000;
+
+    var diffX = Math.abs(Latn - Latp);
+    var diffY = Math.abs(Longn - Longp);
+
+    if(i == 0){
+      vectorDiffsX.push(0);
+      vectorDiffsY.push(0);
+    }else{
+      vectorDiffsX.push(diffX);
+      vectorDiffsY.push(diffY);
+    } 
+  }
+
+
+  //razlike v času
+  for(var i = 0; i < timestamps.length; i++){
+    //console.log(timestamps[i].substr(6,8));
+    var sum = i+1;
+    nC.push(sum);
+
+    if(i == 0){
+      timeDiff.push(0);
+    }else{
+      if(parseInt(timestamps[i].substr(4,6)) > parseInt(timestamps[i-1].substr(4,6))){
+        var prevDiff = Math.abs(60 - parseInt(timestamps[i-1].substr(6,8)));
+        timeDiff.push(prevDiff + parseInt(timestamps[i].substr(6,8)));
+      }else{
+        timeDiff.push(parseInt(timestamps[i].substr(6,8)) - parseInt(timestamps[i-1].substr(6,8)));
+      }
+      
+    }
+    //console.log(timeDiff[i]);
+  }
+
+  //še štetje odmikov in sklep ali je vozišče dobro ali slabo
+  var gr1 = 0;
+  var gr2 = 0;
+  for(var i = 0; i < latDiffs.length; i++){
+    if (latDiffs[i] < 350) {
+      boolLat.push(0);
+    }else{
+      boolLat.push(1);
+      gr1++;
     }
 
-    return total/list.length;
+    if(longDiffs[i] < 350){
+      boolLong.push(0);
+    }else{
+      boolLong.push(1);
+      gr2++;
+    }
+  }
+
+  var n = latDiffs.length;
+  n = parseInt(n/2);
+  if (n > gr2 && n > gr1 ) {
+    console.log("Vozisce je dobro prevozno");
+    prevoznost.push(latDiffs.length);
+    prevoznost.push(gr1);
+    prevoznost.push(gr2);
+    status.push(1);
+  }else{
+    console.log("Vozisce je slabo prevozno");
+    prevoznost.push(latDiffs.length);
+    prevoznost.push(gr1);
+    prevoznost.push(gr2);
+    status.push(0);
+  }
+
+
+
 }
+
 
 //server-client logika
 io.on('connection', (socket) => {
   console.log('povezal se je odjemalec');
 
   socket.on('RequestUpdate', (msg) => {
-
-    //izracun hitrosti za vsak kraj
-    var kumulativneHitrosti = [];
-    var uniqueLokacija = locations.filter( onlyUnique );
-
-    for(var i = 0; i <= speeds.length; i++){
-      //console.log(kumulativneHitrosti[i]);
-      //console.log(hitrost[i]);
-      var pre = 0;
-      for(var j = 0; j < i; j++){
-        pre = pre + parseInt(speeds[j]);
-      }
-      if(i != 0){
-        var kumulativna = parseInt(speeds[i-1])+pre;
-      }else{
-        var kumulativna = parseInt(speeds[i]);
-      }
-      //console.log(typeof hitrost[i]);
-
-      kumulativneHitrosti.push(kumulativna);
-    }
-    io.emit('FinalizeLineChart', kumulativneHitrosti, uniqueLokacija);
-
-    //varianca razmika, najvecji razmik, najmanjsi, povprečni razmik
-    var povprRazmik = 0;
-    var najmanjsiRazmik = 1000;
-    var najvecjiRazmik = 0;
-    for(var i = 0; i < razmik.length; i++ ){
-        povprRazmik += parseFloat(razmik[i]);
-        stevilka = parseFloat(razmik[i]);
-        if(stevilka < najmanjsiRazmik){
-          najmanjsiRazmik = stevilka;
-        }
-        if(stevilka > najvecjiRazmik && stevilka < 350){
-          najvecjiRazmik = stevilka;
-        }
-
-        //console.log(razmik[i]);
-        //console.log(typeof razmik[i]);
-    }
-
-    var varianca = najvecjiRazmik - najmanjsiRazmik;
-    povprRazmik = povprRazmik/razmik.length;
-    //console.log(povprRazmik + " " + najvecjiRazmik + " " + varianca);
-
-    io.emit('FinalizeDistanceChart', najmanjsiRazmik, najvecjiRazmik, varianca);
-
-    //povprecne hitrosti
-    var locationSpeeds = {};
-
-    for (locationIndex in locations) {
-
-        location = locations[locationIndex];
-        speed = speeds[locationIndex];
-
-        locationSpeeds[location] = ( locationSpeeds[location] || [] ).concat([speed])
-    }
-
-    var uniqueLocations = [];
-    var averageSpeeds = [];
-
-    for (location of Object.keys(locationSpeeds)) {
-      //Object.keys(locationSpeeds);
-      uniqueLocations.push(location);
-      averageSpeeds.push(average(locationSpeeds[location]));
-    }
-
-    io.emit('AverageSpeedsChart', uniqueLocations, averageSpeeds);
-
-    //stanje vozisc
-    var statusCounts = {};
-
-    for (s of status) {
-        statusCounts[s] = ( statusCounts[s] || 0 ) + 1
-    }
-
-    var uniqueStatus = Object.keys(statusCounts);
-    var counts = [];
-
-    for (status of uniqueStatus) {
-        counts.push(statusCounts[status])
-    }
-
-    io.emit('RoadStatusChart',uniqueStatus,counts);
-
-    //standardni odklon ipd
-    var averageSpeed = 0;
-    for(var i = 0; i < speeds.length; i++){
-      averageSpeed += speeds[i];
-    }
-    averageSpeed = averageSpeed/speeds.length;
-
-    var odklon = 0;
-    for(var i = 0; i < speeds.length; i++){
-      odklon = (speeds[i] + averageSpeed)
-      odklon = Math.pow(odklon,2);
-    }
-    odklon = odklon/speeds.length;
-    odklon = Math.sqrt(odklon);
-    //console.log(averageSpeed);
-    io.emit('FinalizeBarDataChart',averageSpeed, povprRazmik, odklon);
-
+    //console.log(n);
+    //moram poracunat razlike v stanju vozisc, funkcija
+    algoritem();
+    //posljem na socket
+    io.emit('prevoznostCesteLong',timestamps,longDiffs);
+    io.emit('prevoznostCesteLat',timestamps,latDiffs);
+    io.emit('vektorji', vectorDiffsX, vectorDiffsY);
+    io.emit('CasovneRazlike', timeDiff,nC);
+    io.emit('prevoznost', prevoznost,status);
 
   });
 
