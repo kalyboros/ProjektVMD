@@ -31,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -96,7 +98,9 @@ public class GPSActivity extends AppCompatActivity {
     public void postRequest() throws IOException {
 
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
-
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("hh:mm:ss");
+        String datetime = dateformat.format(c.getTime());
 
         OkHttpClient client = new OkHttpClient();
 
@@ -104,6 +108,7 @@ public class GPSActivity extends AppCompatActivity {
         try {
             postdata.put("latitude", LatGlobal);
             postdata.put("longitude", LongGlobal);
+            postdata.put("timestamp",datetime);
         } catch(JSONException e){
             // TODO Auto-generated catch block
             e.printStackTrace();
