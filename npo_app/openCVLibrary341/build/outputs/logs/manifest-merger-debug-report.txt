@@ -1,5 +1,14 @@
 -- Merging decision tree log ---
 manifest
+
+ADDED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+
 ADDED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
 INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
 INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
@@ -7,6 +16,7 @@ INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVL
 INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
 INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
 INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:2:1-8:12
+
 	package
 		ADDED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml:3:7-27
 		INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
@@ -32,6 +42,12 @@ INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVL
 		ADDED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
 	android:minSdkVersion
+
+		INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Fredyx\Desktop\Projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
+
 		INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
 		ADDED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\kalyb\OneDrive\Desktop\projekt\ProjektVMD\npo_app\openCVLibrary341\src\main\AndroidManifest.xml
+
