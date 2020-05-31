@@ -29,10 +29,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
-=======
+
         <activity android:name=".Verzija1"></activity>
->>>>>>> 9ee6b56d79b5656b34639617e76fd38dd18421d1
+
         <activity android:name=".ShapeDetectionActivity" />
         <activity android:name=".GPSActivity" />
         <activity android:name=".MainActivity">
