@@ -50,8 +50,8 @@ module.exports = {
         var longitude = new longitudeModel({
 			longitude : req.body.longitude,
             latitude : req.body.latitude,
-            pospesek : 5
-
+            pospesek : 5,
+            time_stamp : req.body.timestamp
         });
 
         longitude.save(function (err, longitude) {
