@@ -51,4 +51,21 @@ MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) {
     client.close();
     console.log("zapiram povezavo")
   });
+
+});
+
+io.on('connection', (socket) => {
+  console.log('povezal se je odjemalec');
+
+  socket.on('RequestUpdate', (msg) => {
+    //console.log(n);
+    //moram poracunat razlike v stanju vozisc, funkcija
+    //posljem na socket
+    io.emit('izris', longitudes, latitudes);
+
+  });
+
+  socket.on('disconnect', () => {
+    console.log('odjemalec se je odvezal');
+  });
 });

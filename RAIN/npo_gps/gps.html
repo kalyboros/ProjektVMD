@@ -1,47 +1,73 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Prikaz lokacije</title>
-      <script type="text/javascript"></script>
+     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+   <meta charset="utf-8">
+   <title>Izris poti</title>
+   <style>
+     /* Always set the map height explicitly to define the size of the div
+      * element that contains the map. */
+     #map {
+       height: 100%;
+     }
+     /* Optional: Makes the sample page fill the window. */
+     html, body {
+       height: 100%;
+       margin: 0;
+       padding: 0;
+     }
+   </style>
    </head>
    <body>
-     <script src="js/myscript.js"></script>
+     <div id="map"></div>
+   <script>
+
+     // This example creates a 2-pixel-wide red polyline showing the path of
+     // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+     // Australia which was made by Charles Kingsford Smith.
+
+     function initMap() {
+       var map = new google.maps.Map(document.getElementById('map'), {
+         zoom: 3,
+         center: {lat: parseFloat(latitudes[0]), lng: parseFloat(longitudes[0])},
+         mapTypeId: 'terrain'
+       });
+
+       var pathCoordinates = [
+         {lat: parseFloat(latitudes[0]), lng: parseFloat(longitudes[0])},
+         {lat: parseFloat(latitudes[1]), lng: parseFloat(longitudes[1])},
+         {lat: parseFloat(latitudes[2]), lng: parseFloat(longitudes[2])},
+         {lat: parseFloat(latitudes[3]), lng: parseFloat(longitudes[3])},
+         {lat: parseFloat(latitudes[4]), lng: parseFloat(longitudes[4])},
+       ];
+       var route = new google.maps.Polyline({
+         path: pathCoordinates,
+         geodesic: true,
+         strokeColor: '#FF0000',
+         strokeOpacity: 1.0,
+         strokeWeight: 2
+       });
+
+       route.setMap(map);
+     }
+   </script>
+   <script async defer
+   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL6aljOJR5XoctTtjeyMibZzly7o6LI4g&callback=initMap">
+   </script>
       <script>
-         function geoShow() {
+         var socket = io();
 
-         const status = document.querySelector('#status');
-         const mapLink = document.querySelector('#map-link');
+         function myFunction(){
+         	socket.emit('RequestUpdate', "0");
 
-         mapLink.href = '';
-         mapLink.textContent = '';
-
-         function success(position) {
-         const latitude  = position.coords.latitude;
-         const longitude = position.coords.longitude;
-
-         status.textContent = '';
-         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-         mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
          }
 
-         /*
-         function error() {
-         status.textContent = 'Unable to retrieve your location';
-         }
 
-         if(!navigator.geolocation) {
-         status.textContent = 'Geolocation is not supported by your browser';
-         } else {
-         status.textContent = 'Locating…';
-         navigator.geolocation.getCurrentPosition(success, error);
-         }
-        */
-         }
-         
-         document.querySelector('#show').addEventListener('click', geoShow);
+         //posiljanje zahtevkov na server preko gumba
+
+         socket.on('izris', function(longitudes,latitudes){
+
+         });
       </script>
-      <button id = "show">Prikaži lokacijo</button><br/>
-      <p id = "status"></p>
-      <a id = "map-link" target="_blank"></a>
    </body>
 </html>
