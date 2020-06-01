@@ -40,7 +40,6 @@
         //posiljanje zahtevkov na server preko gumba
 
         socket.on('izris', function(longitudes,latitudes){
-          alert(longitudes[0]);
           initMap(latitudes, longitudes);
         });
      </script>
@@ -48,7 +47,7 @@
 
      function initMap(latitudes, longitudes) {
        var map = new google.maps.Map(document.getElementById('map'), {
-         zoom: 3,
+         zoom: 10,
          center: {lat: parseFloat(latitudes[0]), lng: parseFloat(longitudes[0])},
          mapTypeId: 'terrain'
        });
