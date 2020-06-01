@@ -1,129 +1,76 @@
 package com.example.projektvmd;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context;
 import android.hardware.Camera;
-import android.media.MediaActionSound;
-import android.os.Bundle;
-import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.JavaCamera2View;
 import org.opencv.android.JavaCameraView;
-import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class ShapeDetectionActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class CapturePhoto extends JavaCameraView implements android.hardware.Camera.PictureCallback {
 
     /*static {
         System.loadLibrary("native-lib");
     }*/
-    ImageView imageView;
-    CapturePhoto javaCameraView;
+    private static final String TAG = "OpenCV";
+    private String mPictureFileName;
 
-    Scalar scalarLow, scalarHigh;
-    Mat mat1,mat2, threshold, hierarchy, mIntermediateMat, HSV; //circles;
-
-    List<MatOfPoint> contours;
-    MatOfPoint approxContours;
-    MatOfPoint2f thisContour;
-
-    Button btn_photo;
+    public CapturePhoto(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shape_detection);
-        OpenCVLoader.initDebug();
+    public void takePicture(final String fileName){
+        Log.i(TAG, "Taking picture");
+        this.mPictureFileName = fileName;
+        mCamera.setPreviewCallback(null);
 
-        javaCameraView = (CapturePhoto) findViewById(R.id.cameraView);
-        javaCameraView.setCameraIndex(0);
-
-        scalarLow = new Scalar(45,20,10);
-        scalarHigh = new Scalar(75,255,255);
-        javaCameraView.setCvCameraViewListener(this);
-        javaCameraView.enableView();
-
-        btn_photo=findViewById(R.id.photo);
-        btn_photo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MediaActionSound sound = new MediaActionSound();
-                sound.play(MediaActionSound.SHUTTER_CLICK);
-                Log.i("CAMERA", "on button click");
-                Date sdf = new Date();
-                String currentDateandTime = sdf.toString();
-                String filename = Environment.getExternalStorageDirectory().getPath() + "/sample_picture_" + currentDateandTime + ".jpeg";
-
-                javaCameraView.takePicture(filename);
-            }
-        });
+        mCamera.takePicture(null, null, this);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        javaCameraView.disableView();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        javaCameraView.enableView();
-    }
-
-    @Override
-    protected void onDestroy() {
-        javaCameraView.disableView();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onCameraViewStopped() {
-
-    }
-
-    @Override
-    public void onCameraViewStarted(int width, int height) {
-        mat1 = new Mat(width,height, CvType.CV_8UC4);
-        mat2 = new Mat(width,height, CvType.CV_8UC1);
-        threshold = new Mat(width,height, CvType.CV_8UC1);
-        //circles = new Mat(width,height, CvType.CV_8UC1);
-        mIntermediateMat = new Mat(height, width, CvType.CV_8UC4);
-        HSV = new Mat(height, width, CvType.CV_8UC3);
-        hierarchy = new Mat();
-    }
-
-    @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        mat1=inputFrame.rgba(); // matriko mat1 pretvori v barvno
+    public void onPictureTaken(byte[] data, Camera camera) {
+        Log.i(TAG, "Saving a bitmap to file");
+        List<MatOfPoint> contours;
+        //mCamera.startPreview();
+        //mCamera.setPreviewCallback(this);
+        Mat jpegData = new Mat(1, data.length, CvType.CV_8UC1);
+        Mat mat2 = new Mat(1, data.length, CvType.CV_8UC1);
+        //Mat threshold = new Mat(1, data.length, CvType.CV_8UC1);
+        Mat mIntermediateMat = new Mat(1, data.length, CvType.CV_8UC4);
+        Mat mat1 = new Mat(1, data.length, CvType.CV_8UC4);
+        Mat HSV = new Mat(1, data.length, CvType.CV_8UC3);
+        Mat hierarchy = new Mat();
+        jpegData.put(0, 0, data);
+        Mat bgrMat = Imgcodecs.imdecode(jpegData, Imgcodecs.IMREAD_COLOR);
+        Imgproc.resize(bgrMat, bgrMat, new Size(620, 344));
+        //________________________________________________________________________________________________________________________________________
+        mat1=bgrMat;
+        Imgproc.cvtColor(mat1,mat1, Imgproc.COLOR_BGR2RGB);
         Mat mRgbaT= mat1.t();  // naredi kopijo matrike mat1
         Core.flip(mat1.t(), mRgbaT, 1); // obrne camero za 90 stopinj
         Imgproc.resize(mRgbaT,mRgbaT,mat1.size()); // po tem ko obrne sliko jo more resize-at nazaj tako kot je mat1
         Imgproc.GaussianBlur(mRgbaT,mIntermediateMat,new Size(7,7),1);
         Imgproc.cvtColor(mIntermediateMat,mat2,Imgproc.COLOR_BGR2GRAY);  // spremeni mat2 v sivo sliko
 
-        Imgproc.threshold(mat2, threshold, 190, 255, Imgproc.THRESH_BINARY); // pobarva piksle ali črno ali belo glede na podan threshold
+        //Imgproc.threshold(mat2, threshold, 190, 255, Imgproc.THRESH_BINARY); // pobarva piksle ali črno ali belo glede na podan threshold
 
         Imgproc.cvtColor(mIntermediateMat, HSV, Imgproc.COLOR_RGB2HSV);  // iz barvne v HSV format
         Mat red_hue_range = new Mat();
@@ -253,33 +200,21 @@ public class ShapeDetectionActivity extends AppCompatActivity implements CameraB
                 }
             }
         }
-        /*Mat circles = new Mat();
-        Imgproc.HoughCircles(threshold, circles, Imgproc.CV_HOUGH_GRADIENT,
-                2.0, 100, 100, 300,
-                20, 400);
+        //__________________________________________________________________________________________________________________________________________
+        Imgproc.cvtColor(mRgbaT, mRgbaT, Imgproc.COLOR_RGB2BGR);
+        MatOfByte matOfByte = new MatOfByte();
 
-        if (circles.cols() > 0){
-            for (int i = 0; i < circles.cols(); i++)
-            {
-                double[] vCircle = circles.get(0,i);
-                Log.d("nekaj", String.valueOf(vCircle.length));
+        Imgcodecs.imencode(".jpeg", mRgbaT, matOfByte);
+        byte[] byteArray = matOfByte.toArray();
 
-                if (vCircle == null)
-                    break;
+        try{
+            FileOutputStream fos = new FileOutputStream(mPictureFileName);
 
-                Point pt = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
-                int radius = (int)Math.round(vCircle[2]);
-
-                // draw the found circle
-                Imgproc.circle(mRgbaT, pt, radius, new Scalar(0,255,0), 5);
-                Imgproc.circle(mRgbaT, pt, 3, new Scalar(0,0,255), 5);
-            }
-        }*/
-
-        return mRgbaT;  //vrne barvno sliko s vsemi najdenimi objekti
-    }
-
-    public void Photo(View view) {
-
+            fos.write(byteArray);
+            fos.close();
+        }
+        catch (java.io.IOException e){
+            Log.e("PictureDemo", "Exception in photoCallback", e);
+        }
     }
 }
