@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="">
    <head>
      <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+     <meta charset="utf-8">
+   	 <meta http-equiv="x-ua-compatible" content="ie=edge">
    <meta charset="utf-8">
    <title>Izris poti</title>
    <style>
@@ -19,14 +21,32 @@
    </style>
    </head>
    <body>
+     <div class="divButtonContainer">
+    		<button class="button"  onclick="myFunction()">Pridobi podatke</button>
+   	 </div>
      <div id="map"></div>
+     <script src="myscript.js"></script>
+     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+     <script src="/socket.io/socket.io.js"></script>
+     <script>
+        var socket = io();
+
+        function myFunction(){
+         socket.emit('RequestUpdate', "0");
+
+        }
+
+
+        //posiljanje zahtevkov na server preko gumba
+
+        socket.on('izris', function(longitudes,latitudes){
+          alert(longitudes[0]);
+          initMap(latitudes, longitudes);
+        });
+     </script>
    <script>
 
-     // This example creates a 2-pixel-wide red polyline showing the path of
-     // the first trans-Pacific flight between Oakland, CA, and Brisbane,
-     // Australia which was made by Charles Kingsford Smith.
-
-     function initMap() {
+     function initMap(latitudes, longitudes) {
        var map = new google.maps.Map(document.getElementById('map'), {
          zoom: 3,
          center: {lat: parseFloat(latitudes[0]), lng: parseFloat(longitudes[0])},
@@ -54,20 +74,6 @@
    <script async defer
    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL6aljOJR5XoctTtjeyMibZzly7o6LI4g&callback=initMap">
    </script>
-      <script>
-         var socket = io();
 
-         function myFunction(){
-         	socket.emit('RequestUpdate', "0");
-
-         }
-
-
-         //posiljanje zahtevkov na server preko gumba
-
-         socket.on('izris', function(longitudes,latitudes){
-
-         });
-      </script>
    </body>
 </html>
