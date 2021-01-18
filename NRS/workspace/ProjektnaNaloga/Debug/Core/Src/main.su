@@ -1,0 +1,9 @@
+main.c:65:9:i2c1_pisiRegister	32	static
+main.c:71:6:i2c1_beriRegistre	32	static
+main.c:79:6:initLSM303DLHC	8	static
+main.c:106:5:main	144	static
+main.c:168:6:SystemClock_Config	128	static
+main.c:216:13:MX_I2C1_Init	8	static
+main.c:262:13:MX_SPI1_Init	8	static
+main.c:302:13:MX_GPIO_Init	48	static
+main.c:353:6:Error_Handler	4	static

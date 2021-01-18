@@ -1,0 +1,28 @@
+21:59:23 **** Incremental Build of configuration Debug for project ProjektnaNaloga ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F303xC -DDEBUG -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:156:20: warning: pointer targets in passing argument 1 of 'CDC_Transmit_FS' differ in signedness [-Wpointer-sign]
+    CDC_Transmit_FS(buffer, buffSize);
+                    ^~~~~~
+In file included from ../Core/Src/main.c:26:0:
+../USB_DEVICE/App/usbd_cdc_if.h:110:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'char *'
+ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
+         ^~~~~~~~~~~~~~~
+arm-none-eabi-gcc -o "ProjektnaNaloga.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Fredyx\Desktop\ProjektTmpFile\NRS\workspace\ProjektnaNaloga\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ProjektnaNaloga.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: ProjektnaNaloga.elf
+ 
+arm-none-eabi-objdump -h -S  ProjektnaNaloga.elf  > "ProjektnaNaloga.list"
+arm-none-eabi-objcopy  -O ihex  ProjektnaNaloga.elf  "ProjektnaNaloga.hex"
+arm-none-eabi-size   ProjektnaNaloga.elf 
+   text	   data	    bss	    dec	    hex	filename
+  46576	    852	   6276	  53704	   d1c8	ProjektnaNaloga.elf
+Finished building: default.size.stdout
+ 
+Finished building: ProjektnaNaloga.hex
+ 
+Finished building: ProjektnaNaloga.list
+ 
+
+21:59:25 Build Finished. 0 errors, 1 warnings. (took 1s.811ms)
+
